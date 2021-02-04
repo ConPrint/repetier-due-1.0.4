@@ -362,7 +362,7 @@ void uiCheckSlowKeys(uint16_t &action) {}
 #define UI_DISPLAY_D5_PIN         25
 #define UI_DISPLAY_D6_PIN         27
 #define UI_DISPLAY_D7_PIN         29
-#define BEEPER_PIN                37
+#define BEEPER_PIN                -1
 #define UI_ENCODER_A              33
 #define UI_ENCODER_B              31
 #define UI_ENCODER_CLICK          35
