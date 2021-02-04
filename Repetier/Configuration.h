@@ -1006,6 +1006,7 @@ included delay is already enough.
 Unit is microseconds.
 */
 #define STEPPER_HIGH_DELAY 20
+#define STEPPER_LOW_DELAY 50
 
 /** If your driver needs some additional delay between setting direction and first step signal,
  you can set this here. There are some commands between direction and signal, but some drivers

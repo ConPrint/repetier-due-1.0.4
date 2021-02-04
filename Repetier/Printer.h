@@ -1122,6 +1122,7 @@ public:
 #if FEATURE_FOUR_ZSTEPPER
         WRITE(Z4_STEP_PIN, !START_STEP_WITH_HIGH);
 #endif
+        HAL::delayMicroseconds(STEPPER_LOW_DELAY);
     }
     static INLINE speed_t updateStepsPerTimerCall(speed_t vbase) {
         if (vbase > STEP_DOUBLER_FREQUENCY) {
