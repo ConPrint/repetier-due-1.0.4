@@ -2827,7 +2827,7 @@ int32_t PrintLine::bresenhamStep() { // version for Cartesian printer
 #endif
             Extruder::setDirection(cur->isEPositiveMove());
 #if defined(DIRECTION_DELAY) && DIRECTION_DELAY > 0
-            // HAL::delayMicroseconds(DIRECTION_DELAY); // We leave interrupt without step so no delay needed here
+            HAL::delayMicroseconds(DIRECTION_DELAY); // We leave interrupt without step so no delay needed here
 #endif
 #if USE_ADVANCE
 #if ENABLE_QUADRATIC_ADVANCE
