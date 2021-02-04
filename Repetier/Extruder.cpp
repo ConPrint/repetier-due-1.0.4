@@ -2409,7 +2409,7 @@ void TemperatureController::updateCurrentTemperature() {
     // get raw temperature
     switch (type) {
     case 0:
-        currentTemperature = 25;
+        currentTemperature = 150;
         break;
 #if ANALOG_INPUTS > 0
     case 1:
@@ -2473,7 +2473,7 @@ void TemperatureController::updateCurrentTemperature() {
     int currentTemperature = this->currentTemperature;
     switch (type) {
     case 0:
-        currentTemperatureC = 25;
+        currentTemperatureC = 150;
         break;
     case 1:
     case 2:
