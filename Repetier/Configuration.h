@@ -19,55 +19,18 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-/* Some words on units:
-
-From 0.80 onwards the units used are unified for easier configuration, watch out when transferring from older configs!
-
+/*
+UNITS
 Speed is in mm/s
 Acceleration in mm/s^2
 Temperature is in degrees Celsius
-
-
-##########################################################################################
-##                                        IMPORTANT                                     ##
-##########################################################################################
-
-For easy configuration, the default settings enable parameter storage in EEPROM.
-This means, after the first upload many variables can only be changed using the special
-M commands as described in the documentation. Changing these values in the configuration.h
-file has no effect. Parameters overridden by EEPROM settings are calibration values, extruder
-values except thermistor tables and some other parameter likely to change during usage
-like advance steps or ops mode.
-To override EEPROM settings with config settings, set EEPROM_MODE 0
-
 */
-
-// BASIC SETTINGS: select your board type, thermistor type, axis scaling, and endstop configuration
 
 /** Number of extruders. Maximum 6 extruders. */
 #define NUM_EXTRUDER 1
 
 /** Set to 1 if all extruder motors go to 1 nozzle that mixes your colors. */
 #define MIXING_EXTRUDER 0
-
-//// The following define selects which electronics board you have. Please choose the one that matches your setup
-// Arduino Due with RADDS       = 402
-// Arduino Due with RAMPS-FD    = 403
-// Arduino Due with RAMPS-FD V2 = 404
-// Felix Printers for arm       = 405
-// DAM&DICE DUE                 = 406
-// Smart RAMPS for Due          = 408
-// Smart RAMPS for Due with EEPROM = 413
-// Ultratronics Board           = 409
-// DUE3DOM                      = 410
-// DUE3DOM MINI                 = 411
-// STACKER 3D Superboard        = 412
-// RURAMPS4D 1.0-1.1            = 414
-// RURAMPS4D 1.3                = 415
-// Shasta                       = 416
-// Alligator Board rev1         = 500
-// Alligator Board rev2         = 501
-// Alligator Board rev3         = 502
 
 
 #define MOTHERBOARD 999
@@ -111,58 +74,9 @@ gets used, or you will get problems with checksums etc.
 is a full cartesian system where x, y and z moves are handled by separate motors.
 
 0 = full cartesian system, xyz have separate motors.
-1 = z axis + xy H-gantry (x_motor = x+y, y_motor = x-y)
-2 = z axis + xy H-gantry (x_motor = x+y, y_motor = y-x)
-3 = Delta printers (Rostock, Kossel, RostockMax, Cerberus, etc)
-4 = Tuga printer (Scott-Russell mechanism)
-5 = Bipod system (not implemented)
-8 = y axis + xz H-gantry (x_motor = x+z, z_motor = x-z)
-9 = y axis + xz H-gantry (x_motor = x+z, z_motor = z-x)
-Cases 1, 2, 8 and 9 cover all needed xy and xz H gantry systems. If you get results mirrored etc. you can swap motor connections for x and y.
 If a motor turns in the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 */
-#define DRIVE_SYSTEM 1
-/*
-  Normal core xy implementation needs 2 virtual steps for a motor step to guarantee
-  that every tiny move gets maximum one step regardless of direction. This can cost
-  some speed, so alternatively you can activate the FAST_COREXYZ by uncommenting
-  the define. This solves the core movements as nonlinear movements like done for
-  deltas but without the complicated transformations. Since transformations are still
-  linear you can reduce delta computations per second to 10 and also use 10 
-  subsegments instead of 20 to reduce memory usage.
-*/
-//#define FAST_COREXYZ
-
-/* You can write some GCODE to be executed on startup. Use this e.g. to set some 
-pins. Separate multiple GCODEs with \n
-*/
-//#define STARTUP_GCODE ""
-
-// ##########################################################################################
-// ##                               Calibration                                            ##
-// ##########################################################################################
-
-/** Drive settings for the Delta printers
-*/
-#if DRIVE_SYSTEM == DELTA
-// ***************************************************
-// *** These parameter are only for Delta printers ***
-// ***************************************************
-
-/** \brief Delta drive type: 0 - belts and pulleys, 1 - filament drive */
-#define DELTA_DRIVE_TYPE 0
-
-#if DELTA_DRIVE_TYPE == 0
-/** \brief Pitch in mm of drive belt. GT2 = 2mm */
-#define BELT_PITCH 2
-/** \brief Number of teeth on X, Y and Z tower pulleys */
-#define PULLEY_TEETH 20
-#define PULLEY_CIRCUMFERENCE (BELT_PITCH * PULLEY_TEETH)
-#elif DELTA_DRIVE_TYPE == 1
-/** \brief Filament pulley diameter in millimeters */
-#define PULLEY_DIAMETER 10
-#define PULLEY_CIRCUMFERENCE (PULLEY_DIAMETER * 3.1415927)
-#endif
+#define DRIVE_SYSTEM 0
 
 /** \brief Steps per rotation of stepper motor */
 #define STEPS_PER_ROTATION 200
@@ -1005,26 +919,6 @@ on this endstop.
         8, 8, 8, 8, 8 \
     } // [1,2,4,8,16]
 
-// Motor Current setting (Only functional when motor driver current ref pins are connected to a digital trimpot on supported boards)
-#if MOTHERBOARD == 301
-//#define MOTOR_CURRENT {135,135,135,135,135} // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
-#define MOTOR_CURRENT_PERCENT \
-    { \
-        53, 53, 53, 53, 53 \
-    }
-#elif MOTHERBOARD == 12
-//#define MOTOR_CURRENT {35713,35713,35713,35713,35713} // Values 0-65535 (3D Master 35713 = ~1A)
-#define MOTOR_CURRENT_PERCENT \
-    { \
-        55, 55, 55, 55, 55 \
-    }
-#elif (MOTHERBOARD == 500) || (MOTHERBOARD == 501) || (MOTHERBOARD == 502) // Alligator boards
-//#define MOTOR_CURRENT {130,130,130,110,110,110,110} // expired method
-#define MOTOR_CURRENT_PERCENT \
-    { \
-        51, 51, 51, 44, 44, 44, 44 \
-    }
-#endif
 
 /** \brief Number of segments to generate for delta conversions per second of move
 */
@@ -1033,82 +927,6 @@ on this endstop.
 
 // Delta settings
 #if DRIVE_SYSTEM == DELTA
-/** \brief Delta rod length (mm)
-*/
-#define DELTA_DIAGONAL_ROD 345 // mm
-
-/*  =========== Parameter essential for delta calibration ===================
-
-            C, Y-Axis
-            |                        |___| CARRIAGE_HORIZONTAL_OFFSET (recommend set it to 0)
-            |                        |   \------------------------------------------
-            |_________ X-axis        |    \                                        |
-           / \                       |     \  DELTA_DIAGONAL_ROD (length)    Each move this Rod Height
-          /   \                             \                                 is calculated
-         /     \                             \    Carriage is at printer center!   |
-         A      B                             \_____/--------------------------------
-                                              |--| END_EFFECTOR_HORIZONTAL_OFFSET (recommend set it to 0)
-                                         |----| ROD_RADIUS (Horizontal rod pivot to pivot measure)
-                                     |-----------| PRINTER_RADIUS (recommend set it to ROD_RADIUS)
-
-    Column angles are measured from X-axis counterclockwise
-    "Standard" positions: alpha_A = 210, alpha_B = 330, alpha_C = 90
-*/
-
-/** \brief column positions - change only to correct build imperfections! */
-#define DELTA_ALPHA_A 210
-#define DELTA_ALPHA_B 330
-#define DELTA_ALPHA_C 90
-
-/** Correct radius by this value for each column. Perfect builds have 0 everywhere. */
-#define DELTA_RADIUS_CORRECTION_A 0
-#define DELTA_RADIUS_CORRECTION_B 0
-#define DELTA_RADIUS_CORRECTION_C 0
-
-/** Correction of the default diagonal size. Value gets added.*/
-#define DELTA_DIAGONAL_CORRECTION_A 0
-#define DELTA_DIAGONAL_CORRECTION_B 0
-#define DELTA_DIAGONAL_CORRECTION_C 0
-
-/** Max. radius (mm) the printer should be able to reach. */
-#define DELTA_MAX_RADIUS 200
-
-// Margin (mm) to avoid above tower minimum (xMin xMinsteps)
-// If your printer can put its carriage low enough the rod is horizontal without hitting the floor
-// set this to zero. Otherwise, measure how high the carriage is from horizontal rod
-// Also, movement speeds are 10x to 20x cartesian speeds at tower bottom.
-// You may need to leave a few mm for safety.
-// Hitting floor at high speed can damage your printer (motors, drives, etc)
-// THIS MAY NEED UPDATING IF THE HOT END HEIGHT CHANGES!
-#define DELTA_FLOOR_SAFETY_MARGIN_MM 15
-
-/** \brief Horizontal offset of the universal joints on the end effector (moving platform).
-*/
-#define END_EFFECTOR_HORIZONTAL_OFFSET 0
-
-/** \brief Horizontal offset of the universal joints on the vertical carriages.
-*/
-#define CARRIAGE_HORIZONTAL_OFFSET 0
-
-/** \brief Printer radius in mm,
-  measured from the center of the print area to the vertical smooth tower.
-  Alternately set this to the pivot to pivot horizontal rod distance, when head is at (0,0)
-*/
-#define PRINTER_RADIUS 265.25
-
-/* ========== END Delta calibration data ==============*/
-
-/** When true the delta will home to z max when reset/powered over cord. That way you start with well defined coordinates.
-If you don't do it, make sure to home first before your first move.
-*/
-#define DELTA_HOME_ON_POWER 0
-
-/** To allow software correction of misaligned endstops, you can set the correction in steps here. If you have EEPROM enabled
-you can also change the values online and autoleveling will store the results here. */
-#define DELTA_X_ENDSTOP_OFFSET_STEPS 0
-#define DELTA_Y_ENDSTOP_OFFSET_STEPS 0
-#define DELTA_Z_ENDSTOP_OFFSET_STEPS 0
-
 #endif
 // ========== Tuga special settings =============
 #if DRIVE_SYSTEM == TUGA
