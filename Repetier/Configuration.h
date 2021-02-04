@@ -54,6 +54,8 @@ Temperature is in degrees Celsius
 // Override pin definitions from pins.h
 //#define FAN_PIN   4  // Extruder 2 uses the default fan output, so move to an other pin
 //#define EXTERNALSERIAL  use Arduino serial library instead of build in. Requires more ram, has only 63 byte input buffer.
+// Stepping on low
+#define START_STEP_WITH_HIGH 0
 
 /*
 We can connect BlueTooth to serial converter module directly to boards with a free serial port. Of course could you also
@@ -78,34 +80,9 @@ If a motor turns in the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 */
 #define DRIVE_SYSTEM 0
 
-/** \brief Steps per rotation of stepper motor */
-#define STEPS_PER_ROTATION 200
-
-/** \brief Micro stepping rate of X, Y and Y tower stepper drivers */
-#define MICRO_STEPS 16
-
-// Calculations
-#define AXIS_STEPS_PER_MM ((float)(MICRO_STEPS * STEPS_PER_ROTATION) / PULLEY_CIRCUMFERENCE)
-#define XAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
-#define YAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
-#define ZAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
-#else
-// *******************************************************
-// *** These parameter are for all other printer types ***
-// *******************************************************
-
-/** Drive settings for printers with cartesian drive systems */
-/** \brief Number of steps for a 1mm move in x direction.
-For xy gantry use 2*belt moved!
-Overridden if EEPROM activated. */
-#define XAXIS_STEPS_PER_MM 98.425196
-/** \brief Number of steps for a 1mm move in y direction.
-For xy gantry use 2*belt moved!
-Overridden if EEPROM activated.*/
-#define YAXIS_STEPS_PER_MM 98.425196
-/** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-#define ZAXIS_STEPS_PER_MM 2560
-#endif
+#define XAXIS_STEPS_PER_MM 10
+#define YAXIS_STEPS_PER_MM 10
+#define ZAXIS_STEPS_PER_MM 1063
 
 // ##########################################################################################
 // ##                           Extruder configuration                                     ##
@@ -757,26 +734,26 @@ PRINTER_MODE_CNC 2
 use a mechanical endstop connected with GND. Set value to false for no pull-up
 on this endstop.
 */
-#define ENDSTOP_PULLUP_X_MIN false
-#define ENDSTOP_PULLUP_Y_MIN false
-#define ENDSTOP_PULLUP_Z_MIN false
-#define ENDSTOP_PULLUP_X_MAX false
-#define ENDSTOP_PULLUP_Y_MAX false
-#define ENDSTOP_PULLUP_Z_MAX false
+#define ENDSTOP_PULLUP_X_MIN true
+#define ENDSTOP_PULLUP_Y_MIN true
+#define ENDSTOP_PULLUP_Z_MIN true
+#define ENDSTOP_PULLUP_X_MAX true
+#define ENDSTOP_PULLUP_Y_MAX true
+#define ENDSTOP_PULLUP_Z_MAX true
 
 // Set to true to invert the logic of the endstops
 #define ENDSTOP_X_MIN_INVERTING false
 #define ENDSTOP_Y_MIN_INVERTING false
 #define ENDSTOP_Z_MIN_INVERTING false
-#define ENDSTOP_X_MAX_INVERTING true
-#define ENDSTOP_Y_MAX_INVERTING true
-#define ENDSTOP_Z_MAX_INVERTING true
+#define ENDSTOP_X_MAX_INVERTING false
+#define ENDSTOP_Y_MAX_INVERTING false
+#define ENDSTOP_Z_MAX_INVERTING false
 
 // Set the values true where you have a hardware endstop. The Pin number is taken from pins.h.
 
-#define MIN_HARDWARE_ENDSTOP_X false
-#define MIN_HARDWARE_ENDSTOP_Y false
-#define MIN_HARDWARE_ENDSTOP_Z false
+#define MIN_HARDWARE_ENDSTOP_X true
+#define MIN_HARDWARE_ENDSTOP_Y true
+#define MIN_HARDWARE_ENDSTOP_Z true
 #define MAX_HARDWARE_ENDSTOP_X true
 #define MAX_HARDWARE_ENDSTOP_Y true
 #define MAX_HARDWARE_ENDSTOP_Z true
@@ -789,8 +766,8 @@ on this endstop.
 #define ENDSTOP_PULLUP_X2_MIN false
 #define ENDSTOP_PULLUP_Y2_MIN false
 #define ENDSTOP_PULLUP_Z2_MINMAX false
-#define ENDSTOP_PULLUP_X2_MAX true
-#define ENDSTOP_PULLUP_Y2_MAX true
+#define ENDSTOP_PULLUP_X2_MAX false
+#define ENDSTOP_PULLUP_Y2_MAX false
 
 #define ENDSTOP_X2_MIN_INVERTING true
 #define ENDSTOP_Y2_MIN_INVERTING true
@@ -815,9 +792,9 @@ on this endstop.
 //// ADVANCED SETTINGS - to tweak parameters
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
-#define X_ENABLE_ON 0
-#define Y_ENABLE_ON 0
-#define Z_ENABLE_ON 0
+#define X_ENABLE_ON 1
+#define Y_ENABLE_ON 1
+#define Z_ENABLE_ON 1
 
 // Disables axis when it's not being used.
 #define DISABLE_X false
@@ -831,20 +808,20 @@ on this endstop.
 //#define PREVENT_Z_DISABLE_ON_STEPPER_TIMEOUT
 
 // Inverting axis direction
-#define INVERT_X_DIR 1
-#define INVERT_X2_DIR 1
+#define INVERT_X_DIR 0
+#define INVERT_X2_DIR 0
 #define INVERT_Y_DIR 1
 #define INVERT_Y2_DIR 1
-#define INVERT_Z_DIR 1
-#define INVERT_Z2_DIR 1
-#define INVERT_Z3_DIR 1
-#define INVERT_Z4_DIR 1
+#define INVERT_Z_DIR 0
+#define INVERT_Z2_DIR 0
+#define INVERT_Z3_DIR 0
+#define INVERT_Z4_DIR 0
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR 1
-#define Y_HOME_DIR 1
-#define Z_HOME_DIR 1
+#define X_HOME_DIR -1
+#define Y_HOME_DIR -1
+#define Z_HOME_DIR -1
 
 // Delta robot radius endstop
 #define max_software_endstop_r true
@@ -876,22 +853,26 @@ on this endstop.
 
 // When you have several endstops in one circuit you need to disable it after homing by moving a
 // small amount back. This is also the case with H-belt systems.
-#define ENDSTOP_X_BACK_ON_HOME 5.0
-#define ENDSTOP_Y_BACK_ON_HOME 5.0
-#define ENDSTOP_Z_BACK_ON_HOME 5.0
+#define ENDSTOP_X_BACK_ON_HOME 1
+#define ENDSTOP_Y_BACK_ON_HOME 1
+#define ENDSTOP_Z_BACK_ON_HOME 0
 
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
 // false signals from your endstops. If your endstops don't give false signals, you
 // can set it on for safety.
 #define ALWAYS_CHECK_ENDSTOPS 1
 
+// VB pole vajalik
+#define MOVE_X_WHEN_HOMED 0
+#define MOVE_Y_WHEN_HOMED 0
+#define MOVE_Z_WHEN_HOMED 0
 // maximum positions in mm - only fixed numbers!
 // For delta robot Z_MAX_LENGTH is the maximum travel of the towers and should be set to the distance between the hotend
 // and the platform when the printer is at its home position.
 // If EEPROM is enabled these values will be overridden with the values in the EEPROM
-#define X_MAX_LENGTH 200
-#define Y_MAX_LENGTH 200
-#define Z_MAX_LENGTH 585.16
+#define X_MAX_LENGTH 1500
+#define Y_MAX_LENGTH 2500
+#define Z_MAX_LENGTH 700
 
 // Coordinates for the minimum axis. Can also be negative if you want to have the bed start at 0 and the printer can go to the left side
 // of the bed. Maximum coordinate is given by adding the above X_MAX_LENGTH values.
@@ -962,14 +943,14 @@ Mega. Used only for nonlinear systems like delta or tuga. */
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE_X 500
-#define MAX_FEEDRATE_Y 500
-#define MAX_FEEDRATE_Z 500
+#define MAX_FEEDRATE_X 400
+#define MAX_FEEDRATE_Y 400
+#define MAX_FEEDRATE_Z 120
 
 /** Home position speed in mm/s. Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 80
-#define HOMING_FEEDRATE_Y 80
-#define HOMING_FEEDRATE_Z 3
+#define HOMING_FEEDRATE_X 60
+#define HOMING_FEEDRATE_Y 60
+#define HOMING_FEEDRATE_Z 120
 
 /** Set order of axis homing. Use HOME_ORDER_XYZ and replace XYZ with your order. 
  * If you measure Z with your extruder tip you need a hot extruder to get right measurement. In this
@@ -977,7 +958,7 @@ Mega. Used only for nonlinear systems like delta or tuga. */
  * first a z home to get some reference, then raise to ZHOME_HEAT_HEIGHT do xy homing and then after
  * heating to minimum ZHOME_MIN_TEMPERATURE will z home again for correct height.   
  * */
-#define HOMING_ORDER HOME_ORDER_ZXY
+#define HOMING_ORDER HOME_ORDER_XYZ
 /*
   Raise Z befor ehoming z axis
   0 = no
@@ -1062,14 +1043,14 @@ for some printers causing an early stall.
 /** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high!
  Overridden if EEPROM activated.
 */
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 3000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 3000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 3000
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 600
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 600
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100
 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 4000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 4000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 4000
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 700
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 700
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100
 
 /** If you print on a moving bed, it can become more shaky the higher and bigger
  your print gets. Therefore it might be helpfull to reduce acceleration with
@@ -1108,8 +1089,9 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 20.0
-#define MAX_ZJERK 0.3
+// 33.37 is minimum MAX_JERK
+#define MAX_JERK 35
+#define MAX_ZJERK 3
 
 /** \brief Number of moves we can cache in advance.
 
